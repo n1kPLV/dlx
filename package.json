@@ -1,0 +1,20 @@
+{
+  "name": "dlx",
+  "version": "1.0.0",
+  "description": "Feel free to fork this repository and create a pull request.  I'll look into merging it :)",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/n1kPLV/dlx.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/n1kPLV/dlx/issues"
+  },
+  "homepage": "https://github.com/n1kPLV/dlx#readme",
+  "type": "module"
+}
