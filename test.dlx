@@ -1,0 +1,36 @@
+// Registerbelegung:
+// R1:  Input
+// R2:  aktuell getesteter Teiler
+// R3:  halber Input
+// R4:  Boolischer output für Vergleiche
+// R5:  Outputvariable
+// R9:  Output der "mod" Subroutine (R1 mod R2)
+// R31: Rücksprungadresse
+
+// Testing stuff
+// ADDI   R11, R0, #42
+// SW     1004(R0), R11
+// LW     R10, 1004(R0)
+// // SW     3000(R0), R10
+// ADD    R1, R0, R0
+
+
+start:   ADDI   R2, R0, #2      // Initialize R2 to 2
+         SRAI   R3, R1, #1      // R3 := R1 / 2
+         ADDI   R5, R0, #1      // R5 := 1
+ploop:   SLT    R4, R3, R2      // R4 := R2 > R3 (R1 / 2)
+         BNEZ   R4, end         // if that is, calculation is finished, else continue
+         JAL    mod             // Calculate R1 mod R2 and save to R9
+         BEQZ   R9, noPrime     // if R1 mod R2 is 0 => no prime
+         ADDI   R2, R2, #1      // Increment R2
+         J      ploop           // Jump back to the start of the
+noPrime: ADDI   R5, R0, #0      // R5 := 0
+end:     SW     1000(R0), R5    // Store R5 to 1000
+         HALT
+
+mod:     ADD    R9, R0, R1      // R9 := R1
+mloop:   SLT    R4, R9, R2      // Set R4 := 1 if [R9] < [R2]
+         BNEZ   R4, mend        // If that is, calculation finished, goto end of subroutine
+         SUB    R9, R9, R2      // R9 -= R2
+         J      mloop           // Jump back to loop
+mend:    JR     R31             // Return back to caller

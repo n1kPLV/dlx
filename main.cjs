@@ -14,19 +14,47 @@ else {
     //console.log(program)
 }
 
+let stdin = fs.readFileSync(fs.openSync('/dev/stdin', 'rs'), {encoding: "utf-8"});
+
+let options = JSON.parse(stdin)
+
 const DLX = emu.DLX
 
-DLX.Registers[1] = 13
-// console.log('Setup complete')
+let reg, addr, value
+
+if (options['registers']) {
+    for ([reg, value] of options['registers']) {
+        DLX.writeRegister(reg, value)
+    }
+}
+if (options['memory']) {
+    for ([addr, value] of options['memory']) {
+        DLX.writeAddress(addr, value)
+    }
+}
 
 let ret = DLX.Run(program.toUpperCase().split('\n'))
 
 if (ret === DLX.returnCodes.SUCCESS) {
     console.log('Ihr Programm konnte ausgeführt werden.')
-    console.log(JSON.stringify(DLX.Memory))
-    console.log(DLX.readAddress('#1000'))
+    // console.log(JSON.stringify(DLX.Memory))
+    // console.log(DLX.readAddress('#1000'))
 
-    console.log(JSON.stringify(DLX.Registers))
+    // console.log(JSON.stringify(DLX.Registers))
+    if (options['dump']){
+        let out = {};
+        if (options['dump'].includes('registers')){
+            //console.log(options['dump'], 'includes registers')
+            out.registers = DLX.Registers;
+        }
+        if (options['dump'].includes('memory')){
+            //console.log(options['dump'], 'includes memory')
+            out.memory = DLX.Memory;
+        }
+
+        console.log('<-abc-xyz-123->')
+        console.log(JSON.stringify(out))
+    }
 
     process.exit(0)
 } else if (ret === DLX.returnCodes.WARNING) {
